@@ -37,15 +37,22 @@ async function detectUserLocation() {
   const locationCard = document.getElementById('locationCard');
 
   try {
-    const response = await fetch('https://ipapi.co/json/');
+    const response = await fetch('https://ipinfo.io/json');
     const data = await response.json();
+
+    // Parse lat/lng from "loc" field (format: "lat,lng")
+    const [lat, lng] = data.loc ? data.loc.split(',').map(Number) : [null, null];
+
+    if (!lat || !lng) {
+      throw new Error('Geolocation failed');
+    }
 
     userLocation = {
       city: data.city || 'Unknown',
       region: data.region || 'Unknown',
-      country: data.country_name || 'Unknown',
-      lat: data.latitude,
-      lng: data.longitude
+      country: data.country || 'Unknown',
+      lat: lat,
+      lng: lng
     };
 
     // Calculate nearest airports
