@@ -120,7 +120,7 @@ function updateProductRecommendations() {
 
   // Parking badge
   const parkingBadge = document.getElementById('parkingBadge');
-  if (nearestAirports[0] && nearestAirports[0].distance < 50) {
+  if (nearestAirports[0] && nearestAirports[0].distance < 50) { // 50 km = ~31 miles
     parkingBadge.textContent = `${nearestAirports[0].name} nearby`;
     parkingBadge.classList.add('nearby');
   } else {
@@ -267,9 +267,10 @@ function populateAirportDropdown() {
   const airportSelect = document.getElementById('airport');
   const airportHint = document.getElementById('airportHint');
 
-  airportSelect.innerHTML = nearestAirports.map(airport =>
-    `<option value="${airport.code}">${airport.name}${airport.distance < 100 ? ' (' + Math.round(airport.distance) + ' km away)' : ''}</option>`
-  ).join('');
+  airportSelect.innerHTML = nearestAirports.map(airport => {
+    const distanceMiles = airport.distance * 0.621371; // Convert km to miles
+    return `<option value="${airport.code}">${airport.name}${distanceMiles < 62 ? ' (' + Math.round(distanceMiles) + ' miles away)' : ''}</option>`;
+  }).join('');
 
   if (nearestAirports[0]) {
     airportHint.textContent = `${nearestAirports[0].name} is your nearest airport`;
