@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Personalized travel extras tailored to you. Find parking, hotels, lounges and more at your nearest airport with smart recommendations.">
+
+  <title>Personalized Travel Extras | Holiday Extras</title>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Personalized Travel Extras - Holiday Extras">
+  <meta property="og:description" content="Smart travel recommendations based on your location. Find the best airport parking, hotels, lounges and packages.">
+  <meta property="og:type" content="website">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://d17s4kc6349e5h.cloudfront.net">
+  <link rel="preconnect" href="https://ipapi.co">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TravelAgency",
+    "name": "Holiday Extras",
+    "description": "Personalized travel extras including airport parking, hotels, lounges and packages",
+    "url": "https://www.holidayextras.com"
+  }
+  </script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <img src="https://d17s4kc6349e5h.cloudfront.net/holidayextras/assets/images/logos/HolidayExtras-logo-horizontal-transparent.svg"
+           alt="Holiday Extras"
+           class="logo"
+           height="60"
+           width="240">
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="hero">
+    <picture>
+      <source srcset="assets/hero.webp" type="image/webp">
+      <img src="assets/hero.jpg"
+           alt="Personalized travel recommendations"
+           class="hero-image"
+           width="1600"
+           height="900"
+           loading="eager">
+    </picture>
+    <div class="hero-overlay">
+      <div class="container">
+        <div class="hero-badge">Personalized for you</div>
+        <h1 class="hero-title">Your travel extras, perfectly matched</h1>
+        <p class="hero-subtitle">Smart recommendations based on your location and travel needs</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Location Detection Status -->
+  <section class="location-status">
+    <div class="container">
+      <div class="status-card" id="locationCard">
+        <div class="status-loading">
+          <div class="spinner"></div>
+          <span>Finding your nearest airports...</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Cards -->
+  <section class="products">
+    <div class="container">
+      <h2 class="section-title">Choose your travel extra</h2>
+      <p class="section-subtitle">All products personalized to show your nearest airports first</p>
+
+      <div class="product-grid">
+        <!-- Parking -->
+        <div class="product-card" data-product="parking">
+          <div class="product-icon">🅿️</div>
+          <h3 class="product-title">Airport Parking</h3>
+          <p class="product-description">Save up to 60% on airport parking. Park & Ride, Meet & Greet, and on-airport options.</p>
+          <div class="product-badge" id="parkingBadge"></div>
+          <button class="btn-product" onclick="showProductForm('parking')">Search parking</button>
+        </div>
+
+        <!-- Hotel + Parking -->
+        <div class="product-card" data-product="hotel-parking">
+          <div class="product-icon">🏨</div>
+          <h3 class="product-title">Hotel + Parking</h3>
+          <p class="product-description">Arrive the night before refreshed and relaxed. Includes parking for your trip.</p>
+          <div class="product-badge recommended" id="hotelParkingBadge">Recommended</div>
+          <button class="btn-product" onclick="showProductForm('hotel-parking')">Search packages</button>
+        </div>
+
+        <!-- Lounges -->
+        <div class="product-card" data-product="lounge">
+          <div class="product-icon">✈️</div>
+          <h3 class="product-title">Airport Lounges</h3>
+          <p class="product-description">Escape the hustle and bustle. Relax with unlimited food, drinks, and WiFi.</p>
+          <div class="product-badge" id="loungeBadge"></div>
+          <button class="btn-product" onclick="showProductForm('lounge')">Search lounges</button>
+        </div>
+
+        <!-- Hotel Only -->
+        <div class="product-card" data-product="hotel">
+          <div class="product-icon">🛏️</div>
+          <h3 class="product-title">Airport Hotels</h3>
+          <p class="product-description">Stay near your departure airport. Perfect for early flights or late arrivals.</p>
+          <div class="product-badge" id="hotelBadge"></div>
+          <button class="btn-product" onclick="showProductForm('hotel')">Search hotels</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dynamic Search Form (hidden by default) -->
+  <section class="search-section" id="searchSection" style="display: none;">
+    <div class="container">
+      <div class="search-card">
+        <button class="btn-back" onclick="hideProductForm()">← Back to products</button>
+        <h2 class="search-title" id="searchTitle">Search</h2>
+
+        <form class="search-form" id="searchForm">
+          <!-- Airport Selection -->
+          <div class="form-group">
+            <label for="airport" class="form-label">Departure airport</label>
+            <select id="airport" class="form-control" required>
+              <option value="">Loading airports...</option>
+            </select>
+            <p class="form-hint" id="airportHint"></p>
+          </div>
+
+          <!-- Date fields (product-specific) -->
+          <div class="form-row" id="dateFields">
+            <!-- Populated dynamically based on product -->
+          </div>
+
+          <!-- Passengers (for lounge only) -->
+          <div class="form-row" id="passengerFields" style="display: none;">
+            <div class="form-group">
+              <label for="adults" class="form-label">Adults (12+)</label>
+              <select id="adults" class="form-control" required>
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="children" class="form-label">Children (2-11)</label>
+              <select id="children" class="form-control">
+                <option value="0" selected>0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="infants" class="form-label">Infants (0-1)</label>
+              <select id="infants" class="form-control">
+                <option value="0" selected>0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary">Search now</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section class="features">
+    <div class="container">
+      <h2 class="section-title">Why book with Holiday Extras?</h2>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h3 class="feature-title">Personalized recommendations</h3>
+          <p class="feature-description">We show you the airports and products most relevant to your location and travel patterns.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💰</div>
+          <h3 class="feature-title">Best price guarantee</h3>
+          <p class="feature-description">Find it cheaper elsewhere and we'll refund the difference plus an extra £10.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">⭐</div>
+          <h3 class="feature-title">40+ years of expertise</h3>
+          <p class="feature-description">Trusted by millions of travelers since 1983. Over 1 million 5-star reviews.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3 class="feature-title">Secure booking</h3>
+          <p class="feature-description">ABTA protected and fully secure payment processing. Book with confidence.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📞</div>
+          <h3 class="feature-title">24/7 customer support</h3>
+          <p class="feature-description">UK-based support team available around the clock for assistance.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">✅</div>
+          <h3 class="feature-title">Instant confirmation</h3>
+          <p class="feature-description">Book online and receive immediate confirmation via email and SMS.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 Holiday Extras. All rights reserved. | <a href="https://www.holidayextras.com/terms" class="footer-link">Terms</a> | <a href="https://www.holidayextras.com/privacy" class="footer-link">Privacy</a></p>
+    </div>
+  </footer>
+</body>
+</html>
